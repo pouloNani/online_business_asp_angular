@@ -16,4 +16,9 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.2" />
   </ItemGroup>
 
+ 
+  <ItemGroup>
+    <Folder Include="RequestHelpers\" />
+  </ItemGroup>
+
 </Project>
