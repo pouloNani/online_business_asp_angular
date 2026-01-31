@@ -227,3 +227,8 @@ We'll Build 3 Projects :
                                                 Create ProductRepository class in Infrastructure/Data
                                                 ADD REpository as a service on program.cs
 
+
+
+                                                Generic Repository to allows to deal with several entities at the same time, here we only have product repository but general takes
+                                                Type T as parametern T can be PRoduct or something else .... We should use specification pattern to deal with more complex methods because the only attribute allows for T are the one that derived from the BaseEntiny p.Name will give and error so we use specification patterns
+
