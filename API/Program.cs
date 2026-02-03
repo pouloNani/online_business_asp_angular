@@ -1,7 +1,9 @@
 using API.Middleware;
 using Core.Interfaces;
 using Infrastructure.Data;
+using Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,15 +21,28 @@ builder.Services.AddDbContext<StoreContext>(opt =>
 builder.Services.AddScoped<IProductRepository,ProductRepository>();
 builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
 builder.Services.AddCors();
+builder.Services.AddSingleton<IConnectionMultiplexer>(config =>
+{
+    var connString = builder.Configuration.GetConnectionString("Redis") ?? throw new Exception("Cannot get redis connectionString");
+    var configuration = ConfigurationOptions.Parse(connString,true);
+    
+    return ConnectionMultiplexer.Connect(configuration);
+});
+builder.Services.AddSingleton<ICardService,CartService>();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.UseHttpsRedirection();
+
 
 app.UseMiddleware<ExceptionMiddleware>();
 // specifies the origin that can access the API data
 app.UseCors(x => x.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200","https://localhost:4200"));
 
+//app.UseAuthorization();
+
+app.MapControllers();
 try
 {
     using var scope = app.Services.CreateScope();
@@ -41,8 +56,6 @@ catch(Exception ex)
     Console.WriteLine(ex);
     throw;
 }
-app.UseAuthorization();
 
-app.MapControllers();
 
 app.Run();

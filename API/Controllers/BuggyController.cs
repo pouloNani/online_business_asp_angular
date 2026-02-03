@@ -21,7 +21,7 @@ public class BuggyController : BaseApiController
     [HttpGet("notfound")]
     public IActionResult GetNotFound()
     {
-        return NotFound();
+        return NotFound("Ressource Not Found");
     }
     [HttpGet("internalerror")]
     public IActionResult GetInternalError()
